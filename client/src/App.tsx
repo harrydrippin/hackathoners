@@ -4,6 +4,8 @@ import { Header } from 'src/components/header';
 import { SidebarNav } from 'src/components/sidebarnav';
 import { MainPage } from './pages/main';
 import { ReportPage } from './pages/report';
+import { SettingsPage } from './pages/settings';
+import { UpdatePage } from './pages/update';
 
 export class App extends React.Component<any, any> {
   public render() {
@@ -18,6 +20,8 @@ export class App extends React.Component<any, any> {
                 <div>
                   <Route path="/" component={MainPage} exact={true} />
                   <Route path="/repo/:owner/:project" component={ReportPage} exact={true} />
+                  <Route path="/settings" component={SettingsPage} exact={true} />
+                  <Route path="/update" component={UpdatePage} exact={true} />
                 </div>
               </BrowserRouter>
             </main>

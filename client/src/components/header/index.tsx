@@ -5,9 +5,9 @@ export class Header extends React.Component<any, any> {
   public render() {
     return (
         <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-            <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Hackathoners</a>
+            <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">OMMAT</a>
             <div className="navbar-description w-100 d-none d-md-block">
-                VTT Research Project Opensource Analyse Report
+                Opensource Maturity Model Analyse Tool
             </div>
         </nav>
     );
