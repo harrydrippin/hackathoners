@@ -2,16 +2,42 @@ from tinydb import TinyDB, where
 from tinydb.operations import delete
 from hackathoners.config import Config
 
+"""
+Table: repository
+    {
+        "name": "owner/project_name",
+        "explainer": "프로젝트에 대한 간단한 설명"
+    }
+
+Table: crawler
+    {
+        "timestamp": UnixTime
+    }
+
+Table: report
+    {
+        "name": "owner/project_name",
+        ...여타 다른 Report 요소들
+    }
+"""
+
 class Database:
     db = TinyDB(Config.tinydb_document)
-    team = db.table('team')
+
+    # 각 팀 별 Report를 저장함
+    report = db.table('report')
+    # 팀 리스트를 유지 관리함
+    repository = db.table('repository')
+    # Crawler 동작 시간을 관리함
+    crawler = db.table('crawler')
 
     @classmethod
-    def get_info(cls, name):
+    def get_report_detail(cls, name):
         """
-        한 팀의 점수와 자세한 정보를 가져옵니다.
+        한 Repository의 Report를 가져옵니다.
+        :param name 'owner/project_name' 꼴의 String
         """
-        result = cls.team.search(where('name') == name)
+        result = cls.report.search(where('name') == name)
 
         if len(result) == 0: 
             return False
@@ -19,17 +45,54 @@ class Database:
         return result[0].copy()
 
     @classmethod
-    def get_all(cls):
+    def set_report_detail(cls, name, report):
         """
-        모든 팀의 점수를 가져옵니다.
+        한 Repository의 Report를 저장합니다.
+        :param name 'owner/project_name' 꼴의 String
+        :param report Report 정보를 담는 Dictionary
         """
-        return cls.team.all()
+        return cls.report.upsert(score, where('name') == str(score["name"]))
 
     @classmethod
-    def set_info(cls, score):
+    def get_repository_list(cls):
         """
-        한 팀의 점수와 자세한 정보를 세팅합니다.
+        모든 Repository의 List를 가져옵니다.
         """
-        # if cls.team.get(where('name') == score["name"]) != None:
-        #     cls.team.remove(where('name') == score["name"])
-        return cls.team.upsert(score, where('name') == str(score["name"]))
+        return cls.repository.all()
+
+    @classmethod
+    def set_repository_list(cls, compare, target):
+        """
+        Repository List를 저장합니다.
+        :param compare 대조군 Code를 담은 List
+        :param target 분석 대상 Code를 담은 List
+        """
+        # 모든 데이터를 삭제하고 하나의 데이터를 넣음
+        cls.repository.purge()
+        cls.repository.insert({
+            "compare": compare,
+            "target": target
+        })
+
+    @classmethod
+    def get_crawler_timestamp(cls):
+        """
+        Crawler가 마지막으로 종료된 시간을 가져옵니다.
+        만약 한 번도 돌아간 적이 없다면 False를 반환합니다.
+        """
+        crawler_all = cls.crawler.all()
+        if len(crawler_all) == 0:
+            return False
+        return crawler_all[0].copy()["timestamp"]
+
+    @classmethod
+    def set_crawler_timestamp(cls, timestamp):
+        """
+        Crawler가 마지막으로 종료된 시간을 저장합니다.
+        :param timestamp 종료된 시간의 Unix 시간 값
+        """
+        # 모든 데이터를 삭제하고 하나의 데이터를 넣음
+        cls.crawler.purge()
+        cls.crawler.insert({
+            "timestamp": timestamp
+        })
