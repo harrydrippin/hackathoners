@@ -110,9 +110,10 @@ class Analyser:
 
         # 기여자 추출
         print("[+] Getting contributors...")
-        payload = {
+        headers = {
             "X-Requested-With": "XMLHttpRequest",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36",
+            "Referrer": "https://github.com/" + code + "/graphs/commit-activity"
         }
 
         ret["contributors"] = dict()
@@ -124,7 +125,7 @@ class Analyser:
         while commit_url is not None:
             page += 1
             print("[+] Commits: Page " + str(page))
-            soup = BeautifulSoup(requests.get(commit_url).text, "html.parser")
+            soup = BeautifulSoup(requests.get(commit_url, headers=headers).text, "html.parser")
             for i in soup.select(".commit-author"):
                 author = i.text.strip()
                 if author in ret["contributors"]:
@@ -138,6 +139,18 @@ class Analyser:
                 commit_url = next_link[0]["href"]
             else:
                 commit_url = None
+
+        # Pulse
+        print("[+] Getting Pulse data...")
+        commit_graph_url = "https://github.com/" + code + "/graphs/commit-activity-data"
+        res = requests.get(commit_graph_url, headers=headers).json()
+        total, week = list(), list()
+        for i in range(52):
+            total.append(res[i]['total'])
+            week.append(res[i]['week'])
+        ret["commit_graph"] = {
+            "total": total, "week": week
+        }
         
         # Github의 Abuse Detection을 회피하기 위한 3초 Sleep
         print("[+] Avoiding GitHub abuse detection...")
