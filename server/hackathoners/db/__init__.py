@@ -11,7 +11,8 @@ Table: repository
 
 Table: crawler
     {
-        "timestamp": UnixTime
+        "timestamp": UnixTime,
+        "is_ongoing": True or False
     }
 
 Table: report
@@ -57,9 +58,15 @@ class Database:
     def get_repository_list(cls):
         """
         모든 Repository의 List를 가져옵니다.
+        만약 없다면, False를 반환합니다.
         """
-        data = cls.repository.all()[0]
-        return data["compare"] + data["target"]
+
+        data = cls.repository.all()
+
+        if len(data) == 0:
+            return False
+
+        return data[0]["compare"] + data[0]["target"]
 
     @classmethod
     def set_repository_list(cls, compare, target):
@@ -87,13 +94,23 @@ class Database:
         return crawler_all[0].copy()["timestamp"]
 
     @classmethod
-    def set_crawler_timestamp(cls, timestamp):
+    def is_crawling_ongoing(cls):
         """
-        Crawler가 마지막으로 종료된 시간을 저장합니다.
-        :param timestamp 종료된 시간의 Unix 시간 값
+        현재 Crawling Job이 돌고 있는지 확인합니다.
         """
-        # 모든 데이터를 삭제하고 하나의 데이터를 넣음
+        info = cls.crawler.all()
+        if len(info) == 0:
+            return False
+        return info[0]["is_ongoing"]
+
+    @classmethod
+    def change_crawler_state(cls, state):
+        """
+        주어진 인자로 Crawler의 상태를 변경합니다.
+        :param state True or False
+        """
         cls.crawler.purge()
         cls.crawler.insert({
-            "timestamp": timestamp
+            "timestamp": time.time(),
+            "is_ongoing": state
         })
