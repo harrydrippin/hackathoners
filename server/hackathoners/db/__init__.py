@@ -1,6 +1,6 @@
 from tinydb import TinyDB, where
 from tinydb.operations import delete
-from config import Config
+from hackathoners.config import Config
 
 class Database:
     db = TinyDB(Config.tinydb_document)

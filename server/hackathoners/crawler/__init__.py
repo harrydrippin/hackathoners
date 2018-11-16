@@ -1,5 +1,5 @@
 from .utils import Analyser
-from config import Config
+from hackathoners.config import Config
 
 import threading
 import time
@@ -26,7 +26,6 @@ class CrawlerThread(threading.Thread):
 
    def run(self):
         crawler_run()
-
 
 if __name__ == "__main__":
    # Test purposed code

@@ -5,27 +5,28 @@ import sys
 import time
 from pytz import timezone
 from datetime import datetime
-from config import Config
-from app.db import Database
+from hackathoners.config import Config
+from hackathoners.db import Database
 
 class Analyser:
     @classmethod
-    def analyse(cls, team_info):
-        repo_list = list()
-        for item in team_info:
-            repo_list += item["repos"]
+    def analyse(cls, repo_list):
+        """
+        Github를 크롤링해와서 분석합니다.
+        :param repo_list 'owner/project_name' 꼴의 String List
+        """
         url_array = cls.process_url(repo_list)
         processed_array = list()
         for repo, code in zip(url_array, repo_list):
             try: 
                 processed_array.append(
-                    cls.crawl(repo, code, Config.opeg_commit)
+                    cls.crawl(repo, code)
                 )
             except:
                 print(sys.exc_info()[0], sys.exc_info()[1])
                 try: 
                     processed_array.append(
-                        cls.crawl(repo, code, Config.opeg_commit)    
+                        cls.crawl(repo, code)    
                     )
                 except:
                     print(sys.exc_info()[0], sys.exc_info()[1])
@@ -33,20 +34,13 @@ class Analyser:
                     continue
 
         print(json.dumps(processed_array, indent=4))
-
-        opeg_array = cls.evaluate(processed_array, team_info)
-
-        # DB Transaction
-        for team in opeg_array:
-            Database.set_info(team)
-
-        return opeg_array
+        return processed_array
 
     @classmethod
-    def crawl(cls, repo, code, opeg_commit):
+    def crawl(cls, repo, code):
         """
         주어진 1개의 Repository에 대하여 크롤링을 시도합니다.
-        @return ret 정보가 담긴 Dictionary 객체
+        :return ret 정보가 담긴 Dictionary 객체
         """
         ret = dict()
         ret["name"] = code
@@ -167,6 +161,3 @@ class Analyser:
             url_array.append(github_prefix + repo)
 
         return url_array
-
-if __name__ == '__main__':
-    app.run(debug=True)

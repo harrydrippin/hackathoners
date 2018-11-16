@@ -1,5 +1,6 @@
 requests==2.18.4
 flask==0.12.2
+flask_cors==3.0.2
 flask_script==2.0.6
 flask_restful==0.3.6
 python_dotenv==0.8.2
