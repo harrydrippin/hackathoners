@@ -58,7 +58,8 @@ class Database:
         """
         모든 Repository의 List를 가져옵니다.
         """
-        return cls.repository.all()
+        data = cls.repository.all()[0]
+        return data["compare"] + data["target"]
 
     @classmethod
     def set_repository_list(cls, compare, target):
