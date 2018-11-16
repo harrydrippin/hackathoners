@@ -10,24 +10,24 @@ import { UpdatePage } from './pages/update';
 export class App extends React.Component<any, any> {
   public render() {
     return (
-      <div className="wrapper">
-        <Header />
-        <div className="container-fluid">
-          <div className="row">
-            <SidebarNav />
-            <main role="main" className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-              <BrowserRouter>
-                <div>
-                  <Route path="/" component={MainPage} exact={true} />
-                  <Route path="/repo/:owner/:project" component={ReportPage} exact={true} />
-                  <Route path="/settings" component={SettingsPage} exact={true} />
-                  <Route path="/update" component={UpdatePage} exact={true} />
-                </div>
-              </BrowserRouter>
-            </main>
+        <div className="wrapper">
+          <Header />
+          <div className="container-fluid">
+            <div className="row">
+              <SidebarNav />
+              <main role="main" className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+                <BrowserRouter>
+                  <div>
+                    <Route path="/" component={MainPage} exact={true} />
+                    <Route path="/repo/:owner/:project" component={ReportPage} exact={true} />
+                    <Route path="/settings" component={SettingsPage} exact={true} />
+                    <Route path="/update" component={UpdatePage} exact={true} />
+                  </div>
+                </BrowserRouter>
+              </main>
+            </div>
           </div>
         </div>
-      </div>
     );
   }
 }

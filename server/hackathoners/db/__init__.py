@@ -1,6 +1,7 @@
 from tinydb import TinyDB, where
 from tinydb.operations import delete
 from hackathoners.config import Config
+import time
 
 """
 Table: repository
@@ -52,7 +53,7 @@ class Database:
         :param name 'owner/project_name' 꼴의 String
         :param report Report 정보를 담는 Dictionary
         """
-        return cls.report.upsert(score, where('name') == str(score["name"]))
+        return cls.report.upsert(report, where('name') == str(report["name"]))
 
     @classmethod
     def get_repository_list(cls):
@@ -66,7 +67,7 @@ class Database:
         if len(data) == 0:
             return False
 
-        return data[0]["compare"] + data[0]["target"]
+        return data[0]["compare"], data[0]["target"]
 
     @classmethod
     def set_repository_list(cls, compare, target):

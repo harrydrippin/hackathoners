@@ -17,12 +17,10 @@ def create_app(config):
     from hackathoners.restapi.crawl import Crawl
     from hackathoners.restapi.team_detail import TeamDetail
     from hackathoners.restapi.team_list import TeamList
-    from hackathoners.restapi.update import TeamUpdate
 
     api_v1.add_resource(Crawl, '/crawl')
     api_v1.add_resource(TeamDetail, '/detail')
     api_v1.add_resource(TeamList, '/list')
-    api_v1.add_resource(TeamUpdate, '/update')
 
     _app.register_blueprint(api_v1_blueprint)
 

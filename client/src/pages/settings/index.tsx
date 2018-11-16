@@ -14,12 +14,12 @@ export class SettingsPage extends React.Component<any, any> {
         </p>
         <hr />
         <FormGroup>
-          <Label for="exampleText">대조군 Repository</Label>
-          <Input type="textarea" name="text" id="exampleText" rows={5}/>
+          <Label for="compare">대조군 Repository</Label>
+          <Input type="textarea" name="text" id="compare" rows={5}/>
         </FormGroup>
         <FormGroup>
-          <Label for="exampleText">분석 대상 Repository</Label>
-          <Input type="textarea" name="text" id="exampleText" rows={5}/>
+          <Label for="target">분석 대상 Repository</Label>
+          <Input type="textarea" name="text" id="target" rows={5}/>
         </FormGroup>
         <Button color="primary">저장</Button>
       </div>
