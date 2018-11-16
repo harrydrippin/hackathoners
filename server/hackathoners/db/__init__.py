@@ -65,7 +65,7 @@ class Database:
         data = cls.repository.all()
 
         if len(data) == 0:
-            return False
+            return False, False
 
         return data[0]["compare"], data[0]["target"]
 

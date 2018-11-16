@@ -2,7 +2,6 @@ import Axios, { AxiosInstance } from 'axios';
 import * as React from 'react';
 import "./sidebarnav.css";
 import * as constants from '../../constants';
-import { ApiListResponse } from 'src/types';
 
 interface SidebarNavState {
   load: boolean,
@@ -24,12 +23,20 @@ export class SidebarNav extends React.Component<any, SidebarNavState> {
   public componentDidMount = () => {
     this.axios.get("/api/list")
       .then((resp) => {
-        const data: ApiListResponse = resp.data;
-        this.setState({
-          compare: data.compare,
-          target: data.target,
-          load: true
-        });
+        const data: any = resp.data;
+        if (data.result === 1) {
+          this.setState({
+            compare: [],
+            target: [],
+            load: true
+          });
+        } else {
+          this.setState({
+            compare: data.compare,
+            target: data.target,
+            load: true
+          });
+        }
       })
       .catch((err) => {
         alert("서버와의 통신 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -48,11 +55,57 @@ export class SidebarNav extends React.Component<any, SidebarNavState> {
 
   public renderItem = (name: string, key: number) => (
     <li className="nav-item" key={key}>
-      <a className="nav-link" href="">
+      <a className="nav-link" href={"/repo/" + name}>
         {name}
       </a>
     </li>
   );
+
+  public renderCompare = () => {
+    if (this.state.compare.length === 0) {
+      return (
+        <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>대조군이 없습니다</span>
+        </h6>
+      )
+    } else {
+      return (
+        <div>
+          <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>대조군</span>
+          </h6>
+          <ul className="nav flex-column mb-2">
+            {this.state.compare.map((v, i) => {
+              return this.renderItem(v, i);
+            })}
+          </ul>
+        </div>
+      );
+    }
+  };
+
+  public renderTarget = () => {
+    if (this.state.target.length === 0) {
+      return (
+        <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>분석 대상이 없습니다</span>
+        </h6>
+      )
+    } else {
+      return (
+        <div>
+          <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>분석 대상</span>
+          </h6>
+          <ul className="nav flex-column mb-2">
+            {this.state.target.map((v, i) => {
+              return this.renderItem(v, i);
+            })}
+          </ul>
+        </div>
+      );
+    }
+  };
   
   public render() {
     if (!this.state.load) { return this.renderLoad(); }
@@ -64,27 +117,13 @@ export class SidebarNav extends React.Component<any, SidebarNavState> {
           </h6>
           <ul className="nav flex-column mb-2">
             <li className="nav-item">
-              <a className="nav-link" href="">
+              <a className="nav-link" href="/">
                 개요
               </a>
             </li>
           </ul>
-          <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-            <span>대조군</span>
-          </h6>
-          <ul className="nav flex-column mb-2">
-            {this.state.compare.map((v, i) => {
-              return this.renderItem(v, i);
-            })}
-          </ul>
-          <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-            <span>Repository 보고서</span>
-          </h6>
-          <ul className="nav flex-column mb-2">
-            {this.state.target.map((v, i) => {
-              return this.renderItem(v, i);
-            })}
-          </ul>
+          {this.renderCompare()}
+          {this.renderTarget()}
           <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
             <span>관리</span>
           </h6>
@@ -96,7 +135,7 @@ export class SidebarNav extends React.Component<any, SidebarNavState> {
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/settings">
-                설정
+                분석 정보 입력
               </a>
             </li>
           </ul>

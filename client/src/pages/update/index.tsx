@@ -40,6 +40,7 @@ export class UpdatePage extends React.Component<any, UpdatePageState> {
         const data: any = resp.data;
         if (data.status === 0) {
           alert("Crawling Job이 시작되었습니다.\n완료되기까지 수 분이 소요될 수 있습니다.");
+          location.reload();
         } else {
           alert("현재 서버에서 이미 Crawling Job이 진행 중입니다.\n잠시만 기다려주세요!");
         }
@@ -60,7 +61,7 @@ export class UpdatePage extends React.Component<any, UpdatePageState> {
         : <Badge color="success">정상</Badge>
       }
       <br /><br />
-      <Button color="primary" onClick={this.startCrawling}>Crawling 시작하기</Button>
+      <Button color="primary" disabled={this.state.is_ongoing} onClick={this.startCrawling}>Crawling 시작하기</Button>
     </div>
   )
 

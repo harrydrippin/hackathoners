@@ -79,25 +79,25 @@ class Analyser:
             ret["issue_open"], ret["issue_closed"] = issues[0], issues[1]
 
         # 각 기여자별 Issue 갯수 추출
-        issue_url = "/" + code + "/issues?utf8=%E2%9C%93&q=is%3Aissue"
-        ret["issuers"] = dict()
-        page = 0
-        while issue_url is not None:
-            page += 1
-            print("[+] Issue: Page " + str(page) + " crawling...")
-            soup = BeautifulSoup(requests.get("https://github.com" + issue_url).text, "html.parser")
-            for i in soup.select("ul.js-active-navigation-container li"):
-                issuer_name = i.select(".opened-by .muted-link")[0].get_text()
-                if issuer_name in ret["issuers"]:
-                    ret["issuers"][issuer_name] += 1
-                else:
-                    ret["issuers"][issuer_name] = 1
+        # issue_url = "/" + code + "/issues?utf8=%E2%9C%93&q=is%3Aissue"
+        # ret["issuers"] = dict()
+        # page = 0
+        # while issue_url is not None:
+        #     page += 1
+        #     print("[+] Issue: Page " + str(page) + " crawling...")
+        #     soup = BeautifulSoup(requests.get("https://github.com" + issue_url).text, "html.parser")
+        #     for i in soup.select("ul.js-active-navigation-container li"):
+        #         issuer_name = i.select(".opened-by .muted-link")[0].get_text()
+        #         if issuer_name in ret["issuers"]:
+        #             ret["issuers"][issuer_name] += 1
+        #         else:
+        #             ret["issuers"][issuer_name] = 1
 
-            next_page = soup.select(".next_page")
-            if len(next_page) == 0:
-                break
+        #     next_page = soup.select(".next_page")
+        #     if len(next_page) == 0:
+        #         break
             
-            issue_url = next_page[0].get("href")
+        #     issue_url = next_page[0].get("href")
 
         # 열고 닫힌 Pull Requests의 갯수 추출
         print("[+] Getting pull requests...")
