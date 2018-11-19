@@ -18,5 +18,7 @@ class TeamDetail(Resource):
             }
         return {
             "result": 0,
-            "detail": repo_report
+            "detail": repo_report,
+            "timestamp": Database.get_crawler_timestamp(),
+            "is_ongoing": Database.is_crawling_ongoing()
         }
